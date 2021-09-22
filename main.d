@@ -1,2 +1,2 @@
-main.o: main.cpp json.hpp jsonFactories.hpp gas.hpp thermo.hpp \
-  gasEdges.hpp gasNodes.hpp
+main.o: main.cpp json.hpp process.hpp gasEdges.hpp gas.hpp thermo.hpp \
+  gasNodes.hpp

@@ -4,7 +4,7 @@
 #include <sstream>
 
 #include "json.hpp"
-#include "jsonFactories.hpp"
+#include "process.hpp"
 
 using namespace std;
 using namespace nlohmann;
@@ -13,22 +13,27 @@ int main() {
     ifstream stream("sampleProcess.json");
     stringstream buffer;
     buffer << stream.rdbuf();
-    json js = json::parse(buffer.str());
-
-    auto speciesData = js["species"];
-    map<string, unique_ptr<GasSpecies>> speciesMap;
-    for_each(speciesData.begin(), speciesData.end(), [&speciesMap](json js) {
-        auto species = factories::deserializeGasSpecies(js);
-        speciesMap.emplace(species->name, move(species));
-    });
-
-    auto basisData = js["bases"];
-    map<string, unique_ptr<GasBasis>> basisMap;
-    for_each(basisData.begin(), basisData.end(), [&basisMap, &speciesMap](json js) {
-        auto basis = factories::deserializeGasBasis(js, speciesMap);
-        basisMap.emplace(basis->name, move(basis));
-    });
-
-    cout << basisMap["air"]->components[1]->name;
-
+    Process process(json::parse(buffer.str()));
+    string input;
+    while (getline(cin, input)) {
+        cout << "main:\n";
+        cout << "   " << process.nodeMap["nitrogen main"]->state.P << "\n";
+        cout << "   " << process.nodeMap["nitrogen main"]->state.T << "\n";
+        cout << "   " << process.nodeMap["nitrogen main"]->state.density << "\n";
+        cout << "flow:\n";
+        cout << "   " << process.edgeMap["line to cylinder"]->flow.n << "\n";
+        cout << "cylinder:\n";
+        cout << "   " << process.nodeMap["cylinder"]->contents.n << "\n";
+        cout << "   " << process.nodeMap["cylinder"]->state.P << "\n";
+        cout << "   " << process.nodeMap["cylinder"]->state.T << "\n";
+        cout << "   " << process.nodeMap["cylinder"]->state.density << "\n";
+        cout << "flow:\n";
+        cout << "   " << process.edgeMap["line to tank"]->flow.n << "\n";
+        cout << "tank:\n";
+        cout << "   " << process.nodeMap["tank"]->contents.n << "\n";
+        cout << "   " << process.nodeMap["tank"]->state.P << "\n";
+        cout << "   " << process.nodeMap["tank"]->state.T << "\n";
+        cout << "   " << process.nodeMap["tank"]->state.density << "\n";
+        process.Tick();
+    }
 }

@@ -20,5 +20,59 @@
                 "nitrogen"
             ]
         }
+    ],
+    "nodes": [
+        {
+            "type": "SourceSink",
+            "name": "nitrogen main",
+            "basis": "air",
+            "P": 1.5e5,
+            "T": 298,
+            "xs": [
+                0.98,
+                0.02
+            ]
+        },
+        {
+            "type": "IsochoricCell",
+            "name": "cylinder",
+            "basis": "air",
+            "P": 1.1e5,
+            "V": 0.5,
+            "T": 298,
+            "xs": [
+                0.79,
+                0.21
+            ]
+        },
+        {
+            "type": "IsobaricCell",
+            "name": "tank",
+            "basis": "air",
+            "P": 1e5,
+            "T": 298,
+            "ns": [
+                0,
+                0
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "type": "VelocityHeadLossPipe",
+            "name": "line to cylinder",
+            "start": "nitrogen main",
+            "end": "cylinder",
+            "diameter": 0.1,
+            "headsLost": 1
+        },
+        {
+            "type": "VelocityHeadLossPipe",
+            "name": "line to tank",
+            "start": "cylinder",
+            "end": "tank",
+            "diameter": 0.1,
+            "headsLost": 1
+        }
     ]
 }

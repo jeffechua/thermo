@@ -13,6 +13,7 @@ class GasNode {
     GasNode(const std::string& name, const GasState& state);
     GasNode(const std::string& name, const GasState& state,
             const GasElement& contents);
+    virtual ~GasNode() = default;
     void rungeKuttaStage1(double timestep);
     void rungeKuttaStage2(double timestep);
 
@@ -36,10 +37,11 @@ class IsochoricCell : public GasNode {
     double V;
     IsochoricCell(const std::string& name, GasBasis& basis, double V,
                   GasElement contents);
-    IsochoricCell(const std::string& name, GasBasis& basis, double V,
-                  const std::vector<double>& ns, double T);
-    IsochoricCell(const std::string& name, GasBasis& basis, double V,
-                  const std::vector<double>& xs, double P, double T);
+    // V inference for isobaric makes sense; P inference for isochoric does not.
+    // IsochoricCell(const std::string& name, GasBasis& basis, double V,
+    //               const std::vector<double>& ns, double T);
+    IsochoricCell(const std::string& name, GasBasis& basis, double P, double V,
+                  double T, const std::vector<double>& xs);
 
    protected:
     void recalculateState() override;
@@ -50,10 +52,10 @@ class IsobaricCell : public GasNode {
     double P;
     IsobaricCell(const std::string&, GasBasis& basis, double P,
                  GasElement contents);
-    IsobaricCell(const std::string&, GasBasis& basis, double P,
-                 const std::vector<double>& ns, double T);
-    IsobaricCell(const std::string&, GasBasis& basis, double P,
-                 const std::vector<double>& xs, double V, double T);
+    IsobaricCell(const std::string&, GasBasis& basis, double P, double T,
+                 const std::vector<double>& ns);
+    IsobaricCell(const std::string&, GasBasis& basis, double P, double V,
+                 double T, const std::vector<double>& xs);
 
    protected:
     void recalculateState() override;

@@ -3,15 +3,17 @@
 
 #include "gasEdges.hpp"
 #include "gasNodes.hpp"
+#include "json.hpp"
 
 class Process {
    public:
     double timestep;
-    std::vector<GasSpecies*> species;
-    std::vector<GasBasis*> basis;
-    std::vector<GasNode*> nodes;
-    std::vector<GasEdge*> edges;
-    Process(const std::vector<GasNode*>&nodes, const std::vector<GasEdge*>& edges,
-            double timestep = 0.01);
+    std::map<std::string, std::unique_ptr<GasSpecies>> speciesMap;
+    std::map<std::string, std::unique_ptr<GasBasis>> basisMap;
+    std::map<std::string, std::unique_ptr<GasNode>> nodeMap;
+    std::map<std::string, std::unique_ptr<GasEdge>> edgeMap;
+    std::vector<GasNode*> nodeList;
+    std::vector<GasEdge*> edgeList;
+    Process(nlohmann::json js, double timestep = 0.01);
     void Tick();
 };

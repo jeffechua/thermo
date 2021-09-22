@@ -36,19 +36,21 @@ struct GasBasis {
 
 struct GasState {
     // Fundamental properties
-    double V_;
-    double T;
-    double P;
     const GasBasis& basis;
+    double P;
+    double T;
     std::vector<double> xs;
     // Thermodynamic property caches
-    double averageMolarMass;
-    double density;
-    double physH_;
-    double chemH_;
-    double totalH_;
+    double V_ = NAN;
+    double averageMolarMass = NAN;
+    double density = NAN;
+    double physH_ = NAN;
+    double chemH_ = NAN;
+    double totalH_ = NAN;
     GasState(const GasBasis& basis);
-    double getMolarAverage(std::vector<double> componentValues);
+    GasState(const GasBasis& basis, double P, double T,
+             const std::vector<double>& xs);
+    inline double getMolarAverage(std::vector<double> componentValues);
     inline void clearDerivatives();
     inline void recalculateDerivatives();
 };
@@ -57,7 +59,11 @@ struct GasElement {
     double n;
     std::vector<double> ns;
     double physH;
+    GasElement() = default;
+    GasElement(size_t size);
+    GasElement(const std::vector<double>& ns, double physH);
     // Arithmetic helpers
+    inline GasElement& recalculateN();
     inline GasElement& zero();
     inline GasElement& operator+=(GasElement& other);
     inline GasElement& operator-=(GasElement& other);
@@ -76,7 +82,7 @@ inline GasSpecies::GasSpecies(std::string name, double molarMass, double chemH_)
 /* GAS BASIS */
 
 inline GasBasis::GasBasis(std::string name, double gamma,
-                   const std::vector<GasSpecies*>& components)
+                          const std::vector<GasSpecies*>& components)
     : name(name),
       gamma(gamma),
       Cv_(thermo::R / (gamma - 1)),
@@ -87,14 +93,15 @@ inline GasBasis::GasBasis(std::string name, double gamma,
 
 inline GasState::GasState(const GasBasis& basis)
     : basis(basis),
-      T(thermo::T0),
       P(thermo::P0),
-      V_(thermo::getVFromPT(thermo::P0, thermo::T0)),
-      averageMolarMass(NAN),
-      density(NAN),
-      physH_(NAN),
-      chemH_(NAN),
-      totalH_(NAN) {}
+      T(thermo::T0),
+      xs(std::vector<double>(basis.components.size())) {}
+
+inline GasState::GasState(const GasBasis& basis, double P, double T,
+                          const std::vector<double>& xs)
+    : basis(basis), T(T), P(P), xs(xs) {
+    recalculateDerivatives();
+}
 
 inline double GasState::getMolarAverage(std::vector<double> componentValues) {
     return std::inner_product(xs.begin(), xs.end(), componentValues.begin(), 0);
@@ -109,6 +116,7 @@ inline double GasState::getMolarAverage(std::vector<double> componentValues) {
 // 3. recalculateDerivatives() to standard compute remaining unknowns.
 
 inline void GasState::clearDerivatives() {
+    V_ = NAN;
     averageMolarMass = NAN;
     density = NAN;
     physH_ = NAN;
@@ -117,22 +125,35 @@ inline void GasState::clearDerivatives() {
 }
 
 inline void GasState::recalculateDerivatives() {
-    if (averageMolarMass != NAN) {
+    if (isnan(V_)) V_ = thermo::getVFromPT(P, T);
+    if (isnan(averageMolarMass)) {
         averageMolarMass = 0;
         for (int i = 0; i < xs.size(); i++)
             averageMolarMass += basis.components[i]->molarMass * xs[i];
     }
-    if (density != NAN) density = averageMolarMass / V_;
-    if (physH_ != NAN) physH_ = thermo::getHFromPT(P, T, basis.Cp_);
-    if (chemH_ != NAN) {
+    if (isnan(density)) density = averageMolarMass / V_;
+    if (isnan(physH_)) physH_ = thermo::getHFromPT(P, T, basis.Cp_);
+    if (isnan(chemH_)) {
         chemH_ = 0;
         for (int i = 0; i < xs.size(); i++)
             chemH_ = basis.components[i]->chemH_ * xs[i];
     }
-    if (totalH_ != NAN) totalH_ = physH_ + chemH_;
+    if (isnan(totalH_)) totalH_ = physH_ + chemH_;
 }
 
 /* GAS ELEMENT */
+
+inline GasElement::GasElement(size_t size) : ns(std::vector<double>(size)) {}
+
+inline GasElement::GasElement(const std::vector<double>& ns, double physH)
+    : ns(ns), physH(physH) {
+    recalculateN();
+}
+
+inline GasElement& GasElement::recalculateN() {
+    n = accumulate(ns.begin(), ns.end(), 0.0);
+    return *this;
+}
 
 inline GasElement& GasElement::zero() {
     for (int i = 0; i < ns.size(); i++) ns[i] = 0;

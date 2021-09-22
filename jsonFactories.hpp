@@ -6,19 +6,29 @@
 
 namespace factories {
 
-std::unique_ptr<GasSpecies> deserializeGasSpecies(const nlohmann::json& str);
+std::unique_ptr<GasSpecies> deserializeGasSpecies(const nlohmann::json& js);
 std::unique_ptr<GasBasis> deserializeGasBasis(
-    const nlohmann::json& str,
-    std::map<std::string, std::unique_ptr<GasSpecies>>& speciesMap);
-/*
-std::unique_ptr<GasNode> deserializeGasNode(const nlohmann::json& str);
-std::unique_ptr<GasSourceSink> deserializeGasSourceSink(const nlohmann::json&
-str); std::unique_ptr<IsochoricCell> deserializeIsochoricCell(const
-nlohmann::json& str); std::unique_ptr<IsobaricCell>
-deserializeIsobaricCell(const nlohmann::json& str);
+    const nlohmann::json& js,
+    const std::map<std::string, std::unique_ptr<GasSpecies>>& speciesMap);
 
-std::unique_ptr<GasEdge> deserializeGasEdge(const nlohmann::json& str);
-std::unique_ptr<VelocityHeadLossPipe> deserializeVelocityHeadLossPipe(const
-nlohmann::json& str);
-*/
+std::unique_ptr<GasNode> deserializeGasNode(
+    const nlohmann::json& js,
+    const std::map<std::string, std::unique_ptr<GasBasis>>& basisMap);
+std::unique_ptr<GasNode> deserializeGasSourceSink(
+    const nlohmann::json& js,
+    const std::map<std::string, std::unique_ptr<GasBasis>>& basisMap);
+std::unique_ptr<GasNode> deserializeIsochoricCell(
+    const nlohmann::json& js,
+    const std::map<std::string, std::unique_ptr<GasBasis>>& basisMap);
+std::unique_ptr<GasNode> deserializeIsobaricCell(
+    const nlohmann::json& js,
+    const std::map<std::string, std::unique_ptr<GasBasis>>& basisMap);
+
+std::unique_ptr<GasEdge> deserializeGasEdge(
+    const nlohmann::json& js,
+    const std::map<std::string, std::unique_ptr<GasNode>>& nodeMap);
+std::unique_ptr<GasEdge> deserializeVelocityHeadLossPipe(
+    const nlohmann::json& js,
+    const std::map<std::string, std::unique_ptr<GasNode>>& nodeMap);
+
 }  // namespace factories
