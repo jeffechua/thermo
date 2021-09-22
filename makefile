@@ -3,12 +3,12 @@ CXXFLAGS=--std=c++17 -MMD
 
 OBJS=main.o process.o gasNodes.o gasEdges.o jsonFactories.o
 
-all: main
+all: main.out
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
-main: $(OBJS)
+main.out: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean:
