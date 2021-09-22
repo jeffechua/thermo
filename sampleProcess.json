@@ -1,0 +1,24 @@
+{
+    "species": [
+        {
+            "name": "oxygen",
+            "molarMass": 32,
+            "chemH_": 0
+        },
+        {
+            "name": "nitrogen",
+            "molarMass": 28,
+            "chemH_": 0
+        }
+    ],
+    "bases": [
+        {
+            "name": "air",
+            "gamma": 1.4,
+            "components": [
+                "oxygen",
+                "nitrogen"
+            ]
+        }
+    ]
+}
