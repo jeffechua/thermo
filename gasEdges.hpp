@@ -9,6 +9,7 @@ class GasEdge {
     std::string name;
     GasNode& start;
     GasNode& end;
+    GasState state;
     GasElement flow;
     virtual void calculateFlows() = 0;
     GasEdge(const std::string& name, GasNode& start, GasNode& end);

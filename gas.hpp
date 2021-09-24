@@ -47,9 +47,11 @@ struct GasState {
     double physH_ = NAN;
     double chemH_ = NAN;
     double totalH_ = NAN;
-    GasState(const GasBasis& basis);
-    GasState(const GasBasis& basis, double P, double T,
+    inline GasState(const GasBasis& basis);
+    inline GasState(const GasBasis& basis, double P, double T,
              const std::vector<double>& xs);
+    inline GasState& operator= (const GasState& state);
+
     inline double getMolarAverage(std::vector<double> componentValues);
     inline void clearDerivatives();
     inline void recalculateDerivatives();
@@ -69,6 +71,26 @@ struct GasElement {
     inline GasElement& operator-=(GasElement& other);
     inline GasElement& operator*=(double multiplier);
     inline GasElement& operator/=(double denominator);
+};
+
+struct IopGasState {
+    double P;
+    double T;
+    double xs[10];
+    double V_;
+    double averageMolarMass;
+    double density;
+    double physH_;
+    double chemH_;
+    double totalH_;
+    IopGasState& operator=(const GasState& state);
+};
+
+struct IopGasElement {
+    double n;
+    double ns[10];
+    double physH;
+    IopGasElement& operator=(const GasElement& element);
 };
 
 /* IMPLEMENTATIONS: Since most of the code is inline, I did away with the .cpp
@@ -101,6 +123,19 @@ inline GasState::GasState(const GasBasis& basis, double P, double T,
                           const std::vector<double>& xs)
     : basis(basis), T(T), P(P), xs(xs) {
     recalculateDerivatives();
+}
+
+inline GasState& GasState::operator=(const GasState& state) {
+    P = state.P;
+    T = state.T;
+    V_ = state.V_;
+    xs = state.xs;
+    averageMolarMass = state.averageMolarMass;
+    density = state.density;
+    physH_ = state.physH_;
+    chemH_ = state.chemH_;
+    totalH_ = state.totalH_;
+    return *this;
 }
 
 inline double GasState::getMolarAverage(std::vector<double> componentValues) {

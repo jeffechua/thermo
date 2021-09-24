@@ -10,9 +10,11 @@ GasEdge::GasEdge(const string& name, GasNode& start, GasNode& end)
     : name(name),
       start(start),
       end(end),
-      flow(GasElement(start.state.basis.components.size())) {}
+      flow(start.state.basis.components.size()),
+      state(start.state.basis) {}
 
 void GasEdge::bookFlow(double amount) {
+    state = amount > 0 ? start.state : end.state;
     flow.zero();
     for (int i = 0; i < start.contents.ns.size(); i++)
         flow.ns[i] = (amount > 0 ? start : end).state.xs[i] * amount;

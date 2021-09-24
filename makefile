@@ -1,15 +1,15 @@
 CXX=g++
 CXXFLAGS=--std=c++17 -MMD
 
-OBJS=main.o process.o gasNodes.o gasEdges.o jsonFactories.o
+OBJS=process.o gasNodes.o gasEdges.o jsonFactories.o interop.o
 
-all: main.out
+all: thermo.dylib
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
-main.out: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+thermo.dylib: $(OBJS)
+	$(CXX) $(CXXFLAGS) -dynamiclib -fPIC -o $@ $^
 
 clean:
 	rm -f *.o
