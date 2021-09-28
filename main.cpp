@@ -34,6 +34,6 @@ int main() {
         cout << "   " << process.nodeMap["tank"]->state.P << "\n";
         cout << "   " << process.nodeMap["tank"]->state.T << "\n";
         cout << "   " << process.nodeMap["tank"]->state.density << "\n";
-        process.Tick();
+        process.tick();
     }
 }
