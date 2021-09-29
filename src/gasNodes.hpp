@@ -13,6 +13,7 @@ class GasNode {
     GasNode(const std::string& name, const GasState& state);
     GasNode(const std::string& name, const GasState& state,
             const GasElement& contents);
+    size_t size() const;
     virtual ~GasNode() = default;
     void rungeKuttaStage1(double timestep);
     void rungeKuttaStage2(double timestep);

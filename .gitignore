@@ -1,5 +1,6 @@
-*.o
+build/*
+obj/*
+native_test/obj/*
+*.wasm
 *.out
-*.dll
-*.dylib
 .vscode/

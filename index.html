@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+
+<head>
+  <script>
+    var jsonData;
+    var process;
+    var cylinderView;
+    fetch("sampleProcess.json").then(
+      async (response) => {
+        jsonData = await response.text();
+      }
+    );
+    var Module = {
+      onRuntimeInitialized: function () {
+        process = new Module.Process(jsonData)
+        cylinderView = process.openNodeStateView("cylinder");
+      }
+    };
+  </script>
+  <script src="thermo.js"></script>
+</head>
+
+</html>

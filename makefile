@@ -1,18 +1,24 @@
-CXX=g++
-CXXFLAGS=--std=c++17 -MMD
+CXX=emcc
+CXXFLAGS=--bind -MMD
 
-OBJS=process.o gasNodes.o gasEdges.o jsonFactories.o interop.o
+NAMES=process gas gasNodes gasEdges jsonFactories
+OBJS=${NAMES:%=obj/%.o}
+DEPS=$(NAMES:%=obj/%.d)
 
-all: thermo.dylib
+all: build/thermo.js
 
-%.o: %.cpp
+obj/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
-thermo.dylib: $(OBJS)
-	$(CXX) $(CXXFLAGS) -dynamiclib -fPIC -o $@ $^
+build/thermo.js: $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+test: test.cpp $(OBJS)
+	g++ -D NO_EMSCRIPT --std=c++17 -o test.out $^
 
 clean:
-	rm -f *.o
-	rm -f *.d
+	rm obj/*
+	rm build/thermo.js
+	rm build/*.wasm
 
--include $(OBJS:.o=.d)
+-include ${DEPS}

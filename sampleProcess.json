@@ -1,4 +1,5 @@
 {
+    "timestep": 0.01,
     "species": [
         {
             "name": "oxygen",

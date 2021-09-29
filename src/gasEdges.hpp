@@ -13,6 +13,7 @@ class GasEdge {
     GasElement flow;
     virtual void calculateFlows() = 0;
     GasEdge(const std::string& name, GasNode& start, GasNode& end);
+    size_t size() const;
     virtual ~GasEdge() = default;
 
    protected:
