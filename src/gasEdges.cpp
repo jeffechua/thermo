@@ -6,33 +6,33 @@
 
 using namespace std;
 
-GasEdge::GasEdge(const string& name, GasNode& start, GasNode& end)
+GasEdge::GasEdge(const string& name, GasNode& origin, GasNode& target)
     : name(name),
-      start(start),
-      end(end),
-      flow(start.size()),
-      state(start.state.basis) {}
+      origin(origin),
+      target(target),
+      flow(origin.size()),
+      state(origin.state.basis) {}
 
 size_t GasEdge::size() const { return state.size(); }
 
 void GasEdge::bookFlow(double amount) {
-    state = amount > 0 ? start.state : end.state;
+    state = amount > 0 ? origin.state : target.state;
     flow.zero();
-    for (int i = 0; i < start.size(); i++)
-        flow.ns[i] = (amount > 0 ? start : end).state.xs[i] * amount;
+    for (int i = 0; i < origin.size(); i++)
+        flow.ns[i] = (amount > 0 ? origin : target).state.xs[i] * amount;
     flow.recalculateN();
-    start.dCdt -= flow;
-    end.dCdt += flow;
+    origin.dCdt -= flow;
+    target.dCdt += flow;
 }
 
-VelocityHeadLossPipe::VelocityHeadLossPipe(const string& name, GasNode& start,
-                                           GasNode& end, double diameter,
+VelocityHeadLossPipe::VelocityHeadLossPipe(const string& name, GasNode& origin,
+                                           GasNode& target, double diameter,
                                            double headsLost)
-    : GasEdge(name, start, end), diameter(diameter), headsLost(headsLost) {}
+    : GasEdge(name, origin, target), diameter(diameter), headsLost(headsLost) {}
 
 void VelocityHeadLossPipe::calculateFlows() {
-    GasNode& source = (start.state.P >= end.state.P) ? start : end;
-    GasNode& sink = (&source == &(start)) ? end : start;
+    GasNode& source = (origin.state.P >= target.state.P) ? origin : target;
+    GasNode& sink = (&source == &(origin)) ? target : origin;
     bookFlow(M_PI * diameter * diameter / 4 / source.state.V_ *
              sqrt(2 * (source.state.P - sink.state.P) / headsLost /
                   source.state.density));

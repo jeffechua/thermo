@@ -1,4 +1,4 @@
-{
+var example1 = {
     "timestep": 0.01,
     "species": [
         {
@@ -62,18 +62,18 @@
         {
             "type": "VelocityHeadLossPipe",
             "name": "line to cylinder",
-            "start": "nitrogen main",
-            "end": "cylinder",
+            "origin": "nitrogen main",
+            "target": "cylinder",
             "diameter": 0.1,
             "headsLost": 1
         },
         {
             "type": "VelocityHeadLossPipe",
             "name": "line to tank",
-            "start": "cylinder",
-            "end": "tank",
+            "origin": "cylinder",
+            "target": "tank",
             "diameter": 0.1,
             "headsLost": 1
         }
     ]
-}
+};

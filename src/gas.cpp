@@ -152,8 +152,6 @@ GasStateView::GasStateView(size_t componentCount)
 
 GasStateView& GasStateView::operator=(const GasState& state) {
     P = state.P;
-    cout << state.P << "\n";
-    cout << underlier[0] << "\n";
     T = state.T;
     V_ = state.V_;
     averageMolarMass = state.averageMolarMass;

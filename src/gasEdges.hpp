@@ -7,12 +7,12 @@
 class GasEdge {
    public:
     std::string name;
-    GasNode& start;
-    GasNode& end;
+    GasNode& origin;
+    GasNode& target;
     GasState state;
     GasElement flow;
     virtual void calculateFlows() = 0;
-    GasEdge(const std::string& name, GasNode& start, GasNode& end);
+    GasEdge(const std::string& name, GasNode& origin, GasNode& target);
     size_t size() const;
     virtual ~GasEdge() = default;
 
@@ -25,6 +25,6 @@ class VelocityHeadLossPipe : public GasEdge {
     double headsLost;
     double diameter;
     void calculateFlows() override;
-    VelocityHeadLossPipe(const std::string& name, GasNode& start, GasNode& end,
+    VelocityHeadLossPipe(const std::string& name, GasNode& origin, GasNode& target,
                          double diameter, double headsLost);
 };

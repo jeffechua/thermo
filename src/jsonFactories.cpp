@@ -132,9 +132,9 @@ unique_ptr<GasEdge> deserializeGasEdge(
 
 unique_ptr<GasEdge> deserializeVelocityHeadLossPipe(
     const nlohmann::json& js, const map<string, unique_ptr<GasNode>>& nodeMap) {
-    if (contains_all(js, {"name", "start", "end", "diameter", "headsLost"})) {
+    if (contains_all(js, {"name", "origin", "target", "diameter", "headsLost"})) {
         return unique_ptr<GasEdge>(new VelocityHeadLossPipe(
-            js["name"], *(nodeMap.at(js["start"])), *(nodeMap.at(js["end"])),
+            js["name"], *(nodeMap.at(js["origin"])), *(nodeMap.at(js["target"])),
             js["diameter"], js["headsLost"]));
     } else {
         cout << "Pattern not found: VelocityHeadLossPipe " << js["name"] << ".";
