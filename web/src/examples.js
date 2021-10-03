@@ -1,4 +1,4 @@
-var example1 = {
+export default {
     "timestep": 0.01,
     "species": [
         {

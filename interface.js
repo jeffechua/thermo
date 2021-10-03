@@ -5,6 +5,7 @@ class Node {
     constructor(position) {
         this.rect = new Path.Rectangle({ point: [-25, -25], size: [50, 50], fillColor: "white", strokeColor: "black" });
         this.rect.position = position;
+        this.rect.attach("mousedrag", (event) => { this.position += event.delta; });
         superlayer.addChild(this.rect);
     }
     get position() {
@@ -19,7 +20,11 @@ class Edge {
     constructor(position, origin, target) {
         this.origin = origin;
         this.target = target;
+        origin.rect.attach("mousedrag", (event) => { this.updatePath(); });
+        target.rect.attach("mousedrag", (event) => { this.updatePath(); });
+
         this.core = new Path.Circle({ center: position, radius: 10, fillColor: "white", strokeColor: "black" });
+        this.core.attach("mousedrag", (event) => { this.position += event.delta; });
         superlayer.addChild(this.core);
         this.path = new Path({ strokeColor: "black" });
         underlayer.addChild(this.path);
@@ -33,10 +38,8 @@ class Edge {
         this.updatePath()
     }
     updatePath() {
-        this.path.add(this.origin.position);
-        this.path.add(this.core.position);
-        this.path.add(this.target.position);
-        this.path.smooth();
+        this.path.segments = [this.origin.position, this.core.position, this.target.position];
+        this.path.smooth({ type: "continuous" });
     }
 }
 
