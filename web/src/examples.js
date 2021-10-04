@@ -3,12 +3,22 @@ export default {
     "species": [
         {
             "name": "oxygen",
-            "molarMass": 32,
+            "molarMass": 0.032,
             "chemH_": 0
         },
         {
             "name": "nitrogen",
-            "molarMass": 28,
+            "molarMass": 0.028,
+            "chemH_": 0
+        },
+        {
+            "name": "oxygen",
+            "molarMass": 0.032,
+            "chemH_": 0
+        },
+        {
+            "name": "nitrogen",
+            "molarMass": 0.028,
             "chemH_": 0
         }
     ],
