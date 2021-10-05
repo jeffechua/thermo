@@ -3,35 +3,31 @@
     <p>timestep: {{ spec.timestep }}</p>
     <div style="display: flex">
       <div class="flex-grow">paper</div>
-      <div>
-        <span>species</span>
-        <a class="text-button" @click="spec.species.push({ id: spec.nextID++ })"
-          >+</a
-        >
-        <div v-for="(item, i) of spec.species" :key="item.id">
-          <species-spec
-            v-model="spec.species[i]"
-            v-bind:running="false"
-            v-bind:first="i == 0"
-            v-bind:last="i == spec.species.length - 1"
-            @moveup="move(spec.species, i - 1, i)"
-            @delete="remove(spec.species, i)"
-            @movedown="move(spec.species, i + 1, i)"
-          />
-        </div>
-      </div>
+      <list-manager
+        v-bind:indexer="spec"
+        v-bind:list="spec.species"
+        v-bind:component="speciesSpec"
+        v-bind:running="false"
+      />
+      <list-manager
+        v-bind:indexer="spec"
+        v-bind:list="spec.species"
+        v-bind:component="speciesSpec"
+        v-bind:running="true"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import ListManager from "./components/ListManager.vue";
 import SpeciesSpec from "./components/SpeciesSpec.vue";
 import example from "./examples.js";
 
 export default {
   name: "App",
   components: {
-    SpeciesSpec,
+    ListManager
   },
   data() {
     var spec = example;
@@ -54,12 +50,11 @@ export default {
     }
     return { spec: spec };
   },
-  methods: {
-    move(array, from, to) {
-      array.splice(to, 0, array.splice(from, 1)[0]);
-    },
-    remove(array, at) {
-      array.splice(at, 1);
+  computed: {
+    speciesSpec: {
+      get() {
+        return SpeciesSpec;
+      },
     },
   },
 };

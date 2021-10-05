@@ -2,31 +2,24 @@
   <div class="item-box">
     <div class="contents">
       <table>
-        <tr>
-          <th>name:</th>
-          <td v-if="running">{{ species.name }}</td>
-          <td v-else>
-            <input type="text" v-model="species.name" @input="onChange" />
-          </td>
-        </tr>
-        <tr>
-          <th>molar mass (kg/mol):</th>
-          <td v-if="running">{{ species.molarMass }}</td>
-          <td v-else>
-            <input
-              type="number"
-              v-model="species.molarMass"
-              @input="onChange"
-            />
-          </td>
-        </tr>
-        <tr>
-          <th>chem. enthalpy (J/mol):</th>
-          <td v-if="running">{{ species.chemH_ }}</td>
-          <td v-else>
-            <input type="number" v-model="species.chemH_" @input="onChange" />
-          </td>
-        </tr>
+        <field
+          label="name"
+          type="text"
+          v-model="element_.name"
+          v-bind:running="running"
+        />
+        <field
+          label="molar mass (kg/mol)"
+          type="positive number"
+          v-model="element_.molarMass"
+          v-bind:running="running"
+        />
+        <field
+          label="chem. enthalpy (J/mol)"
+          type="number"
+          v-model="element_.chemH_"
+          v-bind:running="running"
+        />
       </table>
     </div>
     <list-nav
@@ -42,25 +35,18 @@
 
 <script>
 import ListNav from "./ListNav.vue";
+import Field from "./Field.vue";
 
 export default {
   name: "SpeciesSpec",
-  props: ["modelValue", "running", "first", "last"],
-  emits: ["update:modelValue", "moveup", "delete", "movedown"],
-  components: { ListNav },
+  props: ["element", "running", "first", "last"],
+  emits: ["moveup", "delete", "movedown"],
+  components: { ListNav, Field },
   data() {
     return {
-      species: this.modelValue,
+      // evilly bypass the prop mutation restriction
+      element_: this.element,
     };
-  },
-  methods: {
-    onChange() {
-      this.$emit("update:modelValue", this.species);
-    },
   },
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-</style>
