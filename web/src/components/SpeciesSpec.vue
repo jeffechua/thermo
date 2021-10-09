@@ -6,26 +6,26 @@
           label="name"
           type="text"
           v-model="element_.name"
-          v-bind:running="running"
+          :running="running"
         />
         <field
           label="molar mass (kg/mol)"
           type="positive number"
           v-model="element_.molarMass"
-          v-bind:running="running"
+          :running="running"
         />
         <field
           label="chem. enthalpy (J/mol)"
           type="number"
           v-model="element_.chemH_"
-          v-bind:running="running"
+          :running="running"
         />
       </table>
     </div>
     <list-nav
       v-if="!running"
-      v-bind:first="first"
-      v-bind:last="last"
+      :first="first"
+      :last="last"
       @moveup="$emit('moveup')"
       @delete="$emit('delete')"
       @movedown="$emit('movedown')"

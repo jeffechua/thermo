@@ -1,20 +1,55 @@
 <template>
   <div class="#app">
-    <p>timestep: {{ spec.timestep }}</p>
     <div style="display: flex">
       <div class="flex-grow">paper</div>
-      <list-manager
-        v-bind:indexer="spec"
-        v-bind:list="spec.species"
-        v-bind:component="speciesSpec"
-        v-bind:running="false"
-      />
-      <list-manager
-        v-bind:indexer="spec"
-        v-bind:list="spec.species"
-        v-bind:component="speciesSpec"
-        v-bind:running="true"
-      />
+      <div>
+        <div style="display: flex; align-items: center">
+          <a class="text-button" @click="add">+</a>
+          <div class="flex-grow" />
+          <button
+            class="tab"
+            :class="{ active: tab == 'species' }"
+            @click="tab = 'species'"
+          >
+            Species
+          </button>
+          <button
+            class="tab"
+            :class="{ active: tab == 'bases' }"
+            @click="tab = 'bases'"
+          >
+            Bases
+          </button>
+          <button
+            class="tab"
+            :class="{ active: tab == 'nodes' }"
+            @click="tab = 'nodes'"
+          >
+            Nodes
+          </button>
+          <button
+            class="tab"
+            :class="{ active: tab == 'edges' }"
+            @click="tab = 'edges'"
+          >
+            Edges
+          </button>
+        </div>
+        <hr style="margin-top: 0px" />
+        <list-manager
+          v-if="tab == 'species'"
+          :list="spec.species"
+          :component="speciesSpec"
+          :running="false"
+        />
+        <list-manager
+          v-if="tab == 'bases'"
+          :list="spec.bases"
+          :component="basisSpec"
+          :running="false"
+          :data="spec.species"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -22,39 +57,49 @@
 <script>
 import ListManager from "./components/ListManager.vue";
 import SpeciesSpec from "./components/SpeciesSpec.vue";
+import BasisSpec from "./components/BasisSpec.vue";
 import example from "./examples.js";
 
 export default {
   name: "App",
   components: {
-    ListManager
+    ListManager,
   },
   data() {
-    var spec = example;
-    spec.nextID = 0;
-    for (var species of spec.species) {
-      species.id = spec.nextID;
-      spec.nextID++;
-    }
-    for (var basis of spec.bases) {
-      basis.id = spec.nextID;
-      spec.nextID++;
-    }
-    for (var node of spec.nodes) {
-      node.id = spec.nextID;
-      spec.nextID++;
-    }
-    for (var edge of spec.edges) {
-      edge.id = spec.nextID;
-      spec.nextID++;
-    }
-    return { spec: spec };
+    return { spec: example, tab: "species" };
   },
   computed: {
     speciesSpec: {
       get() {
         return SpeciesSpec;
       },
+    },
+    basisSpec: {
+      get() {
+        return BasisSpec;
+      },
+    },
+  },
+  methods: {
+    add() {
+      switch (this.tab) {
+        case "species":
+          this.spec.species.push({
+            id: this.spec.nextID++,
+            name: "",
+            molarMass: 0.018,
+            chemH_: 0,
+          });
+          break;
+        case "bases":
+          this.spec.bases.push({
+            id: this.spec.nextID++,
+            name: "",
+            gamma: 1.4,
+            components: [],
+          });
+          break;
+      }
     },
   },
 };
@@ -65,30 +110,50 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+table {
+  border-spacing: 0px;
+}
+.tab {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  padding: 10px 15px;
+  transition: 0.3s;
+}
+/* Change background color of buttons on hover */
+.tab:hover {
+  background-color: #ddd;
+}
+/* Create an active/current tablink class */
+.tab.active {
+  background-color: #ccc;
 }
 .item-box {
-  border: 1px solid black;
-  border-radius: 5px;
+  border-bottom: 1px solid black;
+  padding-top: 2px;
+  padding-bottom: 2px;
   display: flex;
 }
 .item-box .contents {
   flex-grow: 1;
-  flex-shrink: 0;
   padding-left: 5px;
   padding-right: 5px;
 }
 .item-box th {
   text-align: right;
+  vertical-align: top;
+  font-weight: inherit;
+  font-size: inherit;
   padding-right: 3px;
 }
 .flex-grow {
   flex-grow: 1;
-  flex-shrink: 0;
 }
 .text-button {
   color: #808080;
+  font-size: 14px;
   padding-left: 5px;
   padding-right: 5px;
   user-select: none;
