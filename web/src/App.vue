@@ -37,26 +37,26 @@
         </div>
         <hr style="margin-top: 0px" />
         <list-manager
-          v-if="tab == 'species'"
+          :style="{ display: tab == 'species' ? 'block' : 'none' }"
           :list="spec.species"
           :component="speciesSpec"
           :running="running"
         />
         <list-manager
-          v-if="tab == 'bases'"
+          :style="{ display: tab == 'bases' ? 'block' : 'none' }"
           :list="spec.bases"
           :component="basisSpec"
           :running="running"
           :data="spec.species"
         />
         <list-manager
-          v-if="tab == 'nodes'"
+          :style="{ display: tab == 'nodes' ? 'block' : 'none' }"
           :list="spec.nodes"
           :component="nodeSpec"
           :running="running"
           :data="spec"
         />
-        <div style="height:50px"/>
+        <div style="height: 50px" />
         <table>
           <tr>
             <td>timestep (s):</td>

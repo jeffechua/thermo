@@ -12,7 +12,7 @@
           <th>basis:</th>
           <td v-if="running">{{ element_.basis }}</td>
           <td v-else>
-            <select v-model="element_.basis" @change="onCompositionChanged">
+            <select v-model="element_.basis" @change="recalculateCompositions">
               <option
                 v-for="basis in data.bases"
                 :key="basis.id"
@@ -97,7 +97,7 @@
             i == derefID(element_.basis, data.bases).components.length - 1
           "
           v-model="element_.xs[i]"
-          @change="onCompositionChanged"
+          @change="recalculateCompositions"
         />
         <!-- eslint-enable vue/no-use-v-if-with-v-for -->
       </table>
@@ -134,18 +134,30 @@ export default {
       },
     };
   },
+  beforeUpdate() {
+    let basis = derefID(this.element_.basis, this.data.bases);
+    if (basis == null) {
+      this.element_.basis = basis = this.data.bases[0].id;
+    }
+    if(this.element_.format.includes("x"))
+      this.recalculateCompositions();
+    else if(this.element_.format.includes("n"))
+      while(this.element_.ns.length < basis.components.length)
+        this.element_.ns.push(0);
+  },
   methods: {
     derefID: derefID,
     onTypeChanged(event) {
       if (!this.specTree[event.target.value].includes(this.element_.format))
         this.element_.format = this.specTree[event.target.value][0];
     },
-    onCompositionChanged() {
+    recalculateCompositions() {
       let basis = derefID(this.element_.basis, this.data.bases);
       let sum = 0;
       for (let i = 0; i < basis.components.length - 1; i++)
         sum += this.element_.xs[i];
-      this.element_.xs[basis.components.length - 1] = Math.round((1.0 - sum)*1e8)/1e8;
+      this.element_.xs[basis.components.length - 1] =
+        Math.round((1.0 - sum) * 1e8) / 1e8;
     },
   },
 };

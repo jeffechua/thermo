@@ -39,8 +39,9 @@
         </tr>
       </table>
     </div>
+    <!-- forbid deletion if only one basis left -->
     <list-nav
-      v-if="!running"
+      v-if="!running && !(first && last)"
       :first="first"
       :last="last"
       @moveup="$emit('moveup')"
@@ -65,6 +66,14 @@ export default {
       // evilly bypass the prop mutation restriction
       element_: this.element,
     };
+  },
+  beforeUpdate() {
+    for (let i = 0; i < this.element_.components.length; i++) {
+      if (derefID(this.element_.components[i], this.data) == null) {
+        this.element_.components.splice(i, 1);
+        i--;
+      }
+    }
   },
   methods: {
     derefID: derefID,
