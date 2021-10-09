@@ -27,29 +27,40 @@ export default {
         {
             "id": 3,
             "type": "SourceSink",
+            "format": "PTx",
             "name": "nitrogen main",
-            "basis": "air",
+            "basis": "2",
             "P": 1.5e5,
+            "V": 0,
             "T": 298,
-            "xs": [0.98, 0.02]
+            "H": 0,
+            "xs": [0.98, 0.02],
+            "ns": []
         },
         {
             "id": 4,
             "type": "IsochoricCell",
+            "format": "PVTx",
             "name": "cylinder",
-            "basis": "air",
+            "basis": "2",
             "P": 1.1e5,
             "V": 0.5,
             "T": 298,
-            "xs": [0.79, 0.21]
+            "H": 0,
+            "xs": [0.79, 0.21],
+            "ns": []
         },
         {
             "id": 5,
             "type": "IsobaricCell",
+            "format": "PTn",
             "name": "tank",
-            "basis": "air",
+            "basis": "2",
             "P": 1e5,
+            "V": 0,
             "T": 298,
+            "H": 0,
+            "xs": [1, 0],
             "ns": [0, 0]
         }
     ],

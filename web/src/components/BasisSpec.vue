@@ -17,12 +17,6 @@
         <tr>
           <th>components:</th>
           <td style="display: flex; flex-direction: column">
-            <span v-for="id of element_.components" :key="id">
-              <button v-if="!running" @click="removeComponent(id)">
-                ✕ {{ getSpecies(id).name }}
-              </button>
-              <span v-else>{{ getSpecies(id).name }}</span>
-            </span>
             <select @change="addComponent" v-if="!running">
               <option value="-1">- select -</option>
               <option
@@ -35,6 +29,12 @@
                 {{ species.name }}
               </option>
             </select>
+            <span v-for="id of element_.components" :key="id">
+              <button v-if="!running" @click="removeComponent(id)">
+                ✕ {{ derefID(id, data).name }}
+              </button>
+              <span v-else>{{ derefID(id, data).name }}</span>
+            </span>
           </td>
         </tr>
       </table>
@@ -53,6 +53,7 @@
 <script>
 import ListNav from "./ListNav.vue";
 import Field from "./Field.vue";
+import { derefID } from "../utils.js";
 
 export default {
   name: "BasisSpec",
@@ -66,9 +67,7 @@ export default {
     };
   },
   methods: {
-    getSpecies(id) {
-      return this.data.find((species) => id == species.id);
-    },
+    derefID: derefID,
     addComponent(event) {
       let id = parseInt(event.target.value);
       event.target.value = -1;

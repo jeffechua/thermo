@@ -40,15 +40,33 @@
           v-if="tab == 'species'"
           :list="spec.species"
           :component="speciesSpec"
-          :running="false"
+          :running="running"
         />
         <list-manager
           v-if="tab == 'bases'"
           :list="spec.bases"
           :component="basisSpec"
-          :running="false"
+          :running="running"
           :data="spec.species"
         />
+        <list-manager
+          v-if="tab == 'nodes'"
+          :list="spec.nodes"
+          :component="nodeSpec"
+          :running="running"
+          :data="spec"
+        />
+        <div style="height:50px"/>
+        <table>
+          <tr>
+            <td>timestep (s):</td>
+            <td><input type="number" step="0.01" v-model="spec.timestep" /></td>
+          </tr>
+          <tr>
+            <td>running (s):</td>
+            <td><input type="checkbox" v-model="running" /></td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
@@ -58,6 +76,7 @@
 import ListManager from "./components/ListManager.vue";
 import SpeciesSpec from "./components/SpeciesSpec.vue";
 import BasisSpec from "./components/BasisSpec.vue";
+import NodeSpec from "./components/NodeSpec.vue";
 import example from "./examples.js";
 
 export default {
@@ -66,7 +85,7 @@ export default {
     ListManager,
   },
   data() {
-    return { spec: example, tab: "species" };
+    return { spec: example, tab: "species", running: false };
   },
   computed: {
     speciesSpec: {
@@ -77,6 +96,11 @@ export default {
     basisSpec: {
       get() {
         return BasisSpec;
+      },
+    },
+    nodeSpec: {
+      get() {
+        return NodeSpec;
       },
     },
   },
@@ -99,6 +123,22 @@ export default {
             components: [],
           });
           break;
+        case "nodes":
+          this.spec.nodes.push({
+            id: this.spec.nextID++,
+            basis: this.spec.bases[0].id,
+            name: "",
+            type: "SourceSink",
+            format: "PTx",
+            P: 1e5,
+            V: 1,
+            T: 298,
+            H: 0,
+            xs: [1],
+            ns: [1],
+            gamma: 1.4,
+          });
+          break;
       }
     },
   },
@@ -112,7 +152,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 table {
-  border-spacing: 0px;
+  border-collapse: collapse;
 }
 .tab {
   background-color: inherit;
@@ -144,8 +184,6 @@ table {
 .item-box th {
   text-align: right;
   vertical-align: top;
-  font-weight: inherit;
-  font-size: inherit;
   padding-right: 3px;
 }
 .flex-grow {
@@ -162,7 +200,13 @@ table {
   -moz-user-select: none;
   -ms-user-select: none;
 }
-.text-button-disabled {
+.text-button:hover {
+  color: #101010;
+}
+.text-button:active {
+  color: #505050;
+}
+.text-button.disabled {
   color: #e0e0e0;
   padding-left: 5px;
   padding-right: 5px;
@@ -171,11 +215,5 @@ table {
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-}
-.text-button:hover {
-  color: #101010;
-}
-.text-button:active {
-  color: #505050;
 }
 </style>

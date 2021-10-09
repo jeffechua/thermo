@@ -1,10 +1,15 @@
 <template>
   <div class="nav-container">
-    <a v-if="!first" class="text-button" @click="$emit('moveup')">△</a>
-    <a v-else class="text-button-disabled">△</a>
+    <a class="text-button" :class="{ disabled: first }" @click="$emit('moveup')"
+      >△</a
+    >
     <a class="text-button" @click="$emit('delete')">✕</a>
-    <a v-if="!last" class="text-button" @click="$emit('movedown')">▽</a>
-    <a v-else class="text-button-disabled">▽</a>
+    <a
+      class="text-button"
+      :class="{ disabled: last }"
+      @click="$emit('movedown')"
+      >▽</a
+    >
   </div>
 </template>
 
